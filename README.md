@@ -2,7 +2,7 @@
 
 API que expone los siguientes servicios, que permiten crear y administrar listas de tareas pendientes:
 
-* ##Lists
+* ## Lists
   * [POST] /lists
     * 201 - Creada
     * 400 - Solicitud incorrecta (Bad Request)
@@ -19,7 +19,7 @@ API que expone los siguientes servicios, que permiten crear y administrar listas
     * 200 - OK
     * 400 - Solicitud incorrecta (Bad Request)
     * 500 - Error interno del Servidor
-* ##Items
+* ## Items
   * [POST] /lists/{id}/items
     * 201 - Creado
     * 400 - Solicitud incorrecta (Bad Request)
