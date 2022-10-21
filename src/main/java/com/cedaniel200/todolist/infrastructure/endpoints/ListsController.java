@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
 @RestController
 public class ListsController {
 
@@ -23,7 +27,12 @@ public class ListsController {
     }
 
     @PostMapping(path = "/lists")
-    public ResponseEntity<?>  create(@RequestBody ToDoListInfra toDoListInfra){
+    public ResponseEntity<?>  create(@RequestBody @Valid ToDoListInfra toDoListInfra){
+        ToDoList toDoListToCreate = ToDoListMapper.toToDoList(toDoListInfra);
+        ToDoList toDoListCreated = listCreator.create(toDoListToCreate);
+        ToDoListInfra toDoListInfraCreated = ToDoListMapper.ToDoListInfra(toDoListCreated);
+        return new ResponseEntity(toDoListInfraCreated, HttpStatus.CREATED);
+        /*
         try {
             ToDoList toDoListToCreate = ToDoListMapper.toToDoList(toDoListInfra);
             ToDoList toDoListCreated = listCreator.create(toDoListToCreate);
@@ -35,7 +44,7 @@ public class ListsController {
         } catch (Exception e) {
             return new ResponseEntity(new Error("Error inesperado", new String[]{e.getMessage()}),
                     HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        }*/
     }
 
 }
