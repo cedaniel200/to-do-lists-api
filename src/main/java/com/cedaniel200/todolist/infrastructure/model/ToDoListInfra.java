@@ -1,20 +1,21 @@
 package com.cedaniel200.todolist.infrastructure.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ToDoListInfra {
 
     private long id;
-    @NotNull
     private String name;
     private String description;
-    @NotNull
-    @Email
     private String user;
     private Date date;
 

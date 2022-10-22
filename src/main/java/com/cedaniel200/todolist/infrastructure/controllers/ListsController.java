@@ -1,6 +1,6 @@
-package com.cedaniel200.todolist.infrastructure.endpoints;
+package com.cedaniel200.todolist.infrastructure.controllers;
 
-import com.cedaniel200.todolist.domain.lists.ListCreator;
+import com.cedaniel200.todolist.domain.lists.ListMediator;
 import com.cedaniel200.todolist.domain.model.ToDoList;
 import com.cedaniel200.todolist.infrastructure.mappers.ToDoListMapper;
 import com.cedaniel200.todolist.infrastructure.model.ToDoListInfra;
@@ -20,10 +20,10 @@ import javax.validation.Valid;
 public class ListsController {
 
     @Autowired
-    private final ListCreator listCreator;
+    private final ListMediator listMediator;
 
-    public ListsController(ListCreator listCreator) {
-        this.listCreator = listCreator;
+    public ListsController(ListMediator listMediator) {
+        this.listMediator = listMediator;
     }
 
     @PostMapping(path = "/lists")
@@ -35,8 +35,8 @@ public class ListsController {
         /*
         try {
             ToDoList toDoListToCreate = ToDoListMapper.toToDoList(toDoListInfra);
-            ToDoList toDoListCreated = listCreator.create(toDoListToCreate);
-            ToDoListInfra toDoListInfraCreated = ToDoListMapper.ToDoListInfra(toDoListCreated);
+            ToDoList toDoListCreated = listMediator.create(toDoListToCreate);
+            ToDoListInfra toDoListInfraCreated = ToDoListMapper.toToDoListInfra(toDoListCreated);
             return new ResponseEntity(toDoListInfraCreated, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity(new Error("Solicitud errada", e.getMessage().split(System.lineSeparator())),

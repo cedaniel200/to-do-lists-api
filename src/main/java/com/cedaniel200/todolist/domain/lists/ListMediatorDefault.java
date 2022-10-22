@@ -5,11 +5,11 @@ import com.cedaniel200.todolist.domain.persistence.ListRepository;
 
 import static com.cedaniel200.todolist.domain.util.StringUtils.*;
 
-public class ListCreatorDefault implements ListCreator {
+public class ListMediatorDefault implements ListMediator {
 
-    private ListRepository listRepository;
+    private final ListRepository listRepository;
 
-    public ListCreatorDefault(ListRepository listRepository) {
+    public ListMediatorDefault(ListRepository listRepository) {
         this.listRepository = listRepository;
     }
 
