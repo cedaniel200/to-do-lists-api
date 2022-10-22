@@ -7,6 +7,9 @@ import java.util.Calendar;
 
 public class ToDoListMapper {
 
+    private ToDoListMapper() {
+    }
+
     public static ToDoList toToDoList(ToDoListInfra toDoListInfra){
         ToDoList toDoList = new ToDoList();
         toDoList.setId(toDoListInfra.getId());
@@ -16,13 +19,13 @@ public class ToDoListMapper {
         return toDoList;
     }
 
-    public static ToDoListInfra ToDoListInfra(ToDoList toDoList){
-        ToDoListInfra toDoListInfra = new ToDoListInfra();
-        toDoListInfra.setId(toDoList.getId());
-        toDoListInfra.setName(toDoList.getName());
-        toDoListInfra.setDescription(toDoList.getDescription());
-        toDoListInfra.setUser(toDoList.getUser());
-        toDoListInfra.setDate(Calendar.getInstance().getTime());
-        return toDoListInfra;
+    public static ToDoListInfra toToDoListInfra(ToDoList toDoList){
+        return ToDoListInfra.builder()
+                .id(toDoList.getId())
+                .name(toDoList.getName())
+                .description(toDoList.getDescription())
+                .user(toDoList.getUser())
+                .date(Calendar.getInstance().getTime())
+                .build();
     }
 }

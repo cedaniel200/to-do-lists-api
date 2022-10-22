@@ -18,6 +18,19 @@ jacoco {
     toolVersion = "0.8.8"
 }
 
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/cedaniel200/todolist/infrastructure/config/**',
+                    'com/cedaniel200/todolist/infrastructure/model/**',
+                    'com/cedaniel200/todolist/domain/model/**',
+                    'com/cedaniel200/todolist/TodoListApp*'
+            ])
+        })
+    }
+}
+
 configurations {
     developmentOnly
     runtimeClasspath {
@@ -37,6 +50,7 @@ repositories {
 
 ext {
     openapiUIVersion = '1.6.11'
+    lombokVersion = '1.18.24'
 
     junitVersion = '5.9.0'
     restAssureVersion = '5.2.0'
@@ -45,12 +59,15 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     implementation "org.springdoc:springdoc-openapi-ui:${openapiUIVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testImplementation "io.rest-assured:spring-mock-mvc:${restAssureVersion}"
     testImplementation "io.rest-assured:rest-assured:${restAssureVersion}"
     testImplementation "io.rest-assured:xml-path:${restAssureVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
