@@ -1,4 +1,4 @@
-package com.cedaniel200.todolist.infrastructure.exception;
+package com.cedaniel200.todolist.infrastructure.model.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

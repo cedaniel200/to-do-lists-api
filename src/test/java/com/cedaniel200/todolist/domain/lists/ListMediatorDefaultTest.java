@@ -1,5 +1,6 @@
 package com.cedaniel200.todolist.domain.lists;
 
+import com.cedaniel200.todolist.domain.exception.ValidationException;
 import com.cedaniel200.todolist.domain.model.ToDoList;
 import com.cedaniel200.todolist.domain.persistence.ListRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ class ListMediatorDefaultTest {
 
         openMocks(this);
         when(repository.save(any(ToDoList.class))).thenReturn(toDoListOut);
-        mediator = new ListMediatorDefault(repository);
+        mediator = new ListMediatorDefault(new ListValidator(), repository);
     }
 
     @Test
@@ -47,57 +48,71 @@ class ListMediatorDefaultTest {
     }
 
     @Test
-    void shouldThrowAnIllegalArgumentExceptionWhenNameIsNull() {
+    void shouldThrowAnValidationExceptionWhenNameIsNull() {
         toDoListIn.setName(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ValidationException exception = assertThrows(ValidationException.class,
                 () -> mediator.create(toDoListIn),
-                "Se esperaba un IllegalArgumentException cuando Name es nulo, pero no fue lanzada");
-        assertTrue(exception.getMessage().contains("Name is empty"));
+                "Se esperaba un ValidationException cuando Name es nulo, pero no fue lanzada");
+        assertEquals(1, exception.getErrors().size());
+        assertEquals("ToDoList", exception.getObject());
+        assertTrue(exception.getErrors().get(0).getTitle().contains("Name"));
+        assertTrue(exception.getErrors().get(0).getDetail().contains("Name is empty"));
         verify(repository, times(0)).save(any(ToDoList.class));
     }
 
     @Test
-    void shouldThrowAnIllegalArgumentExceptionWhenNameIsEmpty() {
+    void shouldThrowAnValidationExceptionWhenNameIsEmpty() {
         toDoListIn.setName("");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ValidationException exception = assertThrows(ValidationException.class,
                 () -> mediator.create(toDoListIn),
-                "Se esperaba un IllegalArgumentException cuando Name es vacio, pero no fue lanzada");
-        assertTrue(exception.getMessage().contains("Name is empty"));
+                "Se esperaba un ValidationException cuando Name es vacio, pero no fue lanzada");
+        assertEquals(1, exception.getErrors().size());
+        assertTrue(exception.getErrors().get(0).getTitle().contains("Name"));
+        assertTrue(exception.getErrors().get(0).getDetail().contains("Name is empty"));
         verify(repository, times(0)).save(any(ToDoList.class));
     }
 
     @Test
-    void shouldThrowAnIllegalArgumentExceptionWhenUserIsNull() {
+    void shouldThrowAnValidationExceptionWhenUserIsNull() {
         toDoListIn.setUser(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ValidationException exception = assertThrows(ValidationException.class,
                 () -> mediator.create(toDoListIn),
-                "Se esperaba un IllegalArgumentException cuando User es nulo, pero no fue lanzada");
-        assertTrue(exception.getMessage().contains("User is empty"));
+                "Se esperaba un ValidationException cuando User es nulo, pero no fue lanzada");
+        assertEquals(1, exception.getErrors().size());
+        assertEquals("ToDoList", exception.getObject());
+        assertTrue(exception.getErrors().get(0).getTitle().contains("User"));
+        assertTrue(exception.getErrors().get(0).getDetail().contains("User is empty"));
         verify(repository, times(0)).save(any(ToDoList.class));
     }
 
     @Test
-    void shouldThrowAnIllegalArgumentExceptionWhenUserIsEmpty() {
+    void shouldThrowAnValidationExceptionWhenUserIsEmpty() {
         toDoListIn.setUser("");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ValidationException exception = assertThrows(ValidationException.class,
                 () -> mediator.create(toDoListIn),
-                "Se esperaba un IllegalArgumentException cuando User es vacio, pero no fue lanzada");
-        assertTrue(exception.getMessage().contains("User is empty"));
+                "Se esperaba un ValidationException cuando User es vacio, pero no fue lanzada");
+        assertEquals(1, exception.getErrors().size());
+        assertEquals("ToDoList", exception.getObject());
+        assertTrue(exception.getErrors().get(0).getTitle().contains("User"));
+        assertTrue(exception.getErrors().get(0).getDetail().contains("User is empty"));
         verify(repository, times(0)).save(any(ToDoList.class));
     }
 
     @Test
-    void shouldThrowAnIllegalArgumentExceptionWhenUserFormtIsNotCorrect() {
+    void shouldThrowAnValidationExceptionWhenUserFormtIsNotCorrect() {
         toDoListIn.setUser("cdanielmg200@");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ValidationException exception = assertThrows(ValidationException.class,
                 () -> mediator.create(toDoListIn),
-                "Se esperaba un IllegalArgumentException cuando User tiene un formado errado, pero no fue lanzada");
-        assertTrue(exception.getMessage().contains("The user does not have the email format"));
+                "Se esperaba un ValidationException cuando User tiene un formado errado, pero no fue lanzada");
+        assertEquals(1, exception.getErrors().size());
+        assertEquals("ToDoList", exception.getObject());
+        assertTrue(exception.getErrors().get(0).getTitle().contains("User"));
+        assertTrue(exception.getErrors().get(0).getDetail().contains("The user does not have the email format"));
         verify(repository, times(0)).save(any(ToDoList.class));
     }
 }

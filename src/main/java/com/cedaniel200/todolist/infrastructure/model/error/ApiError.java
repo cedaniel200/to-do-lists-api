@@ -1,5 +1,6 @@
-package com.cedaniel200.todolist.infrastructure.exception;
+package com.cedaniel200.todolist.infrastructure.model.error;
 
+import com.cedaniel200.todolist.infrastructure.exception.LowerCaseClassNameResolver;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
@@ -8,11 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
-import javax.validation.ConstraintViolation;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.CUSTOM, property = "error", visible = true)
@@ -50,18 +49,18 @@ public class ApiError {
     }
 
     private void addSubError(ApiSubError subError) {
-        if (subErrors == null) {
-            subErrors = new ArrayList<>();
+        if (this.subErrors == null) {
+            this.subErrors = new ArrayList<>();
         }
-        subErrors.add(subError);
+        this.subErrors.add(subError);
     }
 
-    private void addValidationError(String object, String field, Object rejectedValue, String message) {
-        addSubError(new ApiValidationError(object, field, rejectedValue, message));
+    public void addValidationError(List<ObjectError> globalErrors) {
+        globalErrors.forEach(this::addValidationError);
     }
 
-    private void addValidationError(String object, String message) {
-        addSubError(new ApiValidationError(object, message));
+    public void addValidationErrors(List<FieldError> fieldErrors) {
+        fieldErrors.forEach(this::addValidationError);
     }
 
     private void addValidationError(FieldError fieldError) {
@@ -72,18 +71,18 @@ public class ApiError {
                 fieldError.getDefaultMessage());
     }
 
-    public void addValidationErrors(List<FieldError> fieldErrors) {
-        fieldErrors.forEach(this::addValidationError);
-    }
-
     private void addValidationError(ObjectError objectError) {
         this.addValidationError(
                 objectError.getObjectName(),
                 objectError.getDefaultMessage());
     }
 
-    public void addValidationError(List<ObjectError> globalErrors) {
-        globalErrors.forEach(this::addValidationError);
+    private void addValidationError(String object, String field, Object rejectedValue, String message) {
+        addSubError(new ApiValidationError(object, field, rejectedValue, message));
+    }
+
+    private void addValidationError(String object, String message) {
+        addSubError(new ApiValidationError(object, message));
     }
 
     /**
