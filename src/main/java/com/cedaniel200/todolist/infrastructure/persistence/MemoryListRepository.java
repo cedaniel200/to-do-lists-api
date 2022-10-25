@@ -5,6 +5,7 @@ import com.cedaniel200.todolist.domain.persistence.ListRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class MemoryListRepository implements ListRepository {
     private final List<ToDoList> lists;
@@ -22,5 +23,11 @@ public class MemoryListRepository implements ListRepository {
         toDoListSaved.setDescription(toDoList.getDescription());
         toDoListSaved.setUser(toDoList.getUser());
         return toDoListSaved;
+    }
+
+    @Override
+    public Optional<ToDoList> findById(long listId) {
+        if(lists.isEmpty() || lists.size() <  listId) return Optional.empty();
+        return Optional.ofNullable(lists.get((int) listId));
     }
 }

@@ -1,5 +1,6 @@
 package com.cedaniel200.todolist.infrastructure.exception;
 
+import com.cedaniel200.todolist.domain.exception.NotFoundException;
 import com.cedaniel200.todolist.domain.exception.ValidationException;
 import com.cedaniel200.todolist.domain.model.Error;
 import com.cedaniel200.todolist.infrastructure.model.error.ApiError;
@@ -22,7 +23,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -96,9 +96,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Handles EntityNotFoundException. Created to encapsulate errors with more detail than javax.persistence.EntityNotFoundException.
+     * Handles NotFoundException.
      *
-     * @param ex the EntityNotFoundException
+     * @param ex the NotFoundException
      * @return the ApiError object
      */
     @ExceptionHandler(NotFoundException.class)
