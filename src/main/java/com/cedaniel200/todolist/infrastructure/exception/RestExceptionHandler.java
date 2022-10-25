@@ -96,22 +96,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Handles javax.validation.ConstraintViolationException. Thrown when @Validated fails.
-     *
-     * @param ex the ConstraintViolationException
-     * @return the ApiError object
-     */
-    /*
-    @ExceptionHandler(javax.validation.ConstraintViolationException.class)
-    protected ResponseEntity<Object> handleConstraintViolation(
-            javax.validation.ConstraintViolationException ex) {
-        ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage("Validation error");
-        apiError.addValidationErrors(ex.getConstraintViolations());
-        return buildResponseEntity(apiError);
-    }*/
-
-    /**
      * Handles EntityNotFoundException. Created to encapsulate errors with more detail than javax.persistence.EntityNotFoundException.
      *
      * @param ex the EntityNotFoundException
@@ -180,32 +164,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         apiError.setDebugMessage(ex.getMessage());
         return buildResponseEntity(apiError);
     }
-
-    /**
-     * Handle javax.persistence.EntityNotFoundException
-     */
-    /*
-    @ExceptionHandler(javax.persistence.EntityNotFoundException.class)
-    protected ResponseEntity<Object> handleEntityNotFound(javax.persistence.EntityNotFoundException ex) {
-        return buildResponseEntity(new ApiError(NOT_FOUND, ex));
-    }*/
-
-    /**
-     * Handle DataIntegrityViolationException, inspects the cause for different DB causes.
-     *
-     * @param ex the DataIntegrityViolationException
-     * @return the ApiError object
-     */
-    /*
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    protected ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex,
-                                                                  WebRequest request) {
-        if (ex.getCause() instanceof ConstraintViolationException) {
-            return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, "Database error", ex.getCause()));
-        }
-        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex));
-    }
-    */
 
     /**
      * Handle Exception, handle generic Exception.class
