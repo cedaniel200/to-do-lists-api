@@ -30,4 +30,9 @@ public class MemoryListRepository implements ListRepository {
         if(lists.isEmpty() || lists.size() <  listId) return Optional.empty();
         return Optional.ofNullable(lists.get((int) listId));
     }
+
+    @Override
+    public List<ToDoList> findAll() {
+        return lists;
+    }
 }

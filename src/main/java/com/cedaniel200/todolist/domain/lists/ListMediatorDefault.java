@@ -31,6 +31,11 @@ public class ListMediatorDefault implements ListMediator {
         return toDoList.orElseThrow(() -> new NotFoundException(String.format("list with id %s not found", listId)));
     }
 
+    @Override
+    public List<ToDoList> getAllLists() {
+        return this.listRepository.findAll();
+    }
+
     private void validate(ToDoList toDoList) {
         Optional<List<Error>> errors = validator.validate(toDoList);
         if(errors.isPresent())

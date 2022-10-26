@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.xml.bind.SchemaOutputResolver;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 public class ListsController {
@@ -23,7 +25,7 @@ public class ListsController {
     }
 
     @PostMapping(path = "/lists")
-    public ResponseEntity<ToDoListInfra>  create(@RequestBody @Valid ToDoListInfra toDoListInfra) {
+    public ResponseEntity<ToDoListInfra> create(@RequestBody @Valid ToDoListInfra toDoListInfra) {
         ToDoList toDoListToCreate = ToDoListMapper.toToDoList(toDoListInfra);
         ToDoList toDoListCreated = listMediator.create(toDoListToCreate);
         ToDoListInfra toDoListInfraCreated = ToDoListMapper.toToDoListInfra(toDoListCreated);
@@ -31,10 +33,19 @@ public class ListsController {
     }
 
     @GetMapping(path = "/lists/{listId}")
-    public ResponseEntity<ToDoListInfra> getById(@PathVariable("listId") Long listId){
+    public ResponseEntity<ToDoListInfra> getById(@PathVariable("listId") Long listId) {
         ToDoList toDoListFinded = listMediator.getListById(listId);
         ToDoListInfra toDoListInfraFinded = ToDoListMapper.toToDoListInfra(toDoListFinded);
-        return  new ResponseEntity<>(toDoListInfraFinded, HttpStatus.OK);
+        return new ResponseEntity<>(toDoListInfraFinded, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/lists")
+    public ResponseEntity<List<ToDoListInfra>> getById() {
+        List<ToDoList> toDoListsFinded = listMediator.getAllLists();
+        List<ToDoListInfra> toDoListsInfraFinded = toDoListsFinded.stream()
+                .map(ToDoListMapper::toToDoListInfra)
+                .collect(toList());
+        return new ResponseEntity<>(toDoListsInfraFinded, HttpStatus.OK);
     }
 
 }
