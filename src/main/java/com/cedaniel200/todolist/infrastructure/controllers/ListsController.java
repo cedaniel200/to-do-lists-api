@@ -3,6 +3,7 @@ package com.cedaniel200.todolist.infrastructure.controllers;
 import com.cedaniel200.todolist.domain.lists.ListMediator;
 import com.cedaniel200.todolist.domain.model.ToDoList;
 import com.cedaniel200.todolist.infrastructure.mappers.ToDoListMapper;
+import com.cedaniel200.todolist.infrastructure.model.ListCollection;
 import com.cedaniel200.todolist.infrastructure.model.ToDoListInfra;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,12 +41,12 @@ public class ListsController {
     }
 
     @GetMapping(path = "/lists")
-    public ResponseEntity<List<ToDoListInfra>> getById() {
+    public ResponseEntity<ListCollection> getById() {
         List<ToDoList> toDoListsFinded = listMediator.getAllLists();
         List<ToDoListInfra> toDoListsInfraFinded = toDoListsFinded.stream()
                 .map(ToDoListMapper::toToDoListInfra)
                 .collect(toList());
-        return new ResponseEntity<>(toDoListsInfraFinded, HttpStatus.OK);
+        return new ResponseEntity<>(new ListCollection(toDoListsInfraFinded), HttpStatus.OK);
     }
 
 }

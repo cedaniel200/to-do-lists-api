@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,5 +17,6 @@ public class ToDoList {
     private String name;
     private String description;
     private String user;
+    private List<Item> items;
 
 }
