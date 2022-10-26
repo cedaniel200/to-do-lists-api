@@ -1,6 +1,5 @@
 package com.cedaniel200.todolist.infraestructure;
 
-import com.cedaniel200.todolist.domain.lists.ListMediator;
 import com.cedaniel200.todolist.domain.lists.ListMediatorDefault;
 import com.cedaniel200.todolist.domain.lists.ListValidator;
 import com.cedaniel200.todolist.domain.model.ToDoList;
@@ -10,14 +9,16 @@ import com.cedaniel200.todolist.infrastructure.exception.RestExceptionHandler;
 import com.cedaniel200.todolist.infrastructure.model.ToDoListInfra;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
@@ -27,11 +28,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+@DisplayName("Acceptance Test of List - API")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ListAcceptanceTest {
 
+    //TODO : Se deben mejorar los test para validar el contrato de los endpoints Por el momento solo se valida el codigo de estado y que contenga alguna información
+
+    @SuppressWarnings("unused")
     @LocalServerPort
     private int port;
+    @SuppressWarnings("unused")
     @Autowired
     private RestExceptionHandler restExceptionHandler;
     @Mock
@@ -52,39 +58,99 @@ class ListAcceptanceTest {
                 .description("Mis cosas por hacer esta semana")
                 .user("cdanielmg200@gmail.com")
                 .build();
+        ArrayList<ToDoList> lists = new ArrayList<>();
+        lists.add(new ToDoList());
+        lists.add(new ToDoList());
+        lists.add(new ToDoList());
         openMocks(this);
         when(repository.save(any(ToDoList.class))).thenReturn(toDoListOut);
+        when(repository.findById(any(Long.class))).thenReturn(Optional.of(toDoListOut));
+        when(repository.findAll()).thenReturn(lists);
         standaloneSetup(restExceptionHandler, new ListsController(new ListMediatorDefault(new ListValidator(), repository)));
     }
 
-    @Test
-    void shouldCreateAListAndReturnStatusCode200() {
-        given()
-                .contentType(ContentType.JSON)
-                .body(toDoListInfra)
-        .when()
-                .post(String.format("http://localhost:%s/lists", port))
-        .then()
-                .statusCode(is(201))
-                .body(containsString("100"))
-                .body(containsString("date"));
+    @Nested
+    @DisplayName("POST - /lists")
+    class WhenCreateAList {
+        @Test
+        void shouldCreateAListAndReturnStatusCode201() {
+            given()
+                    .contentType(ContentType.JSON)
+                    .body(toDoListInfra)
+                    .when()
+                    .post(String.format("http://localhost:%s/lists", port))
+                    .then()
+                    .statusCode(is(201))
+                    .body(containsString("100"))
+                    .body(containsString("date"));
+        }
+
+        @Test
+        void shouldNotCreateAListAndReturnStatusCode400() {
+            toDoListInfra.setName(null);
+            toDoListInfra.setUser(null);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body(toDoListInfra)
+                    .when()
+                    .post(String.format("http://localhost:%s/lists", port))
+                    .then()
+                    .log().ifValidationFails()
+                    .statusCode(is(400))
+                    .body(containsString("Name is empty"))
+                    .body(containsString("User is empty"));
+        }
     }
 
-    @Test
-    void shouldNotCreateAListAndReturnStatusCode400() {
-        toDoListInfra.setName(null);
-        toDoListInfra.setUser(null);
+    @Nested
+    @DisplayName("GET - /lists/{listId}")
+    class WhenGetAListById {
+        @Test
+        void shouldGetAListAndReturnStatusCode200() {
+            given()
+                    .contentType(ContentType.JSON)
+                    .body(toDoListInfra)
+                    .when()
+                    .get(String.format("http://localhost:%s/lists/1", port))
+                    .then()
+                    .statusCode(is(200))
+                    .body(containsString("100"))
+                    .body(containsString("date"));
+        }
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(toDoListInfra)
-        .when()
-                .post(String.format("http://localhost:%s/lists", port))
-        .then()
-                .log().ifValidationFails()
-                .statusCode(is(400))
-                .body(containsString("Name is empty"))
-                .body(containsString("User is empty"));
+        @Test
+        void shouldNotGetAListAndReturnStatusCode404() {
+            when(repository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body(toDoListInfra)
+                    .when()
+                    .get(String.format("http://localhost:%s/lists/0", port))
+                    .then()
+                    .log().ifValidationFails()
+                    .statusCode(is(404))
+                    .body(containsString("NOT_FOUND"));
+        }
     }
+
+    @Nested
+    @DisplayName("GET - /lists/")
+    class WhenGetAllLists {
+        @Test
+        void shouldGetAListCollectionAndReturnStatusCode200() {
+            given()
+                    .contentType(ContentType.JSON)
+                    .body(toDoListInfra)
+                    .when()
+                    .get(String.format("http://localhost:%s/lists", port))
+                    .then()
+                    .statusCode(is(200))
+                    .body(containsString("\"size\":3"));
+        }
+
+    }
+
 
 }
