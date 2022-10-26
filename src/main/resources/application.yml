@@ -1,6 +1,10 @@
 spring:
   application:
     name: todo-list
+  data:
+    mongodb:
+      database: to-do-lists
+      uri: mongodb://localhost:27017/to-do-lists
 springdoc:
   api-docs:
     path: /todo-list/docs

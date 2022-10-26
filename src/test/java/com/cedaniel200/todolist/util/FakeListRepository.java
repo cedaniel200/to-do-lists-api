@@ -1,4 +1,4 @@
-package com.cedaniel200.todolist.infrastructure.persistence;
+package com.cedaniel200.todolist.util;
 
 import com.cedaniel200.todolist.domain.model.ToDoList;
 import com.cedaniel200.todolist.domain.persistence.ListRepository;
@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MemoryListRepository implements ListRepository {
+public class FakeListRepository implements ListRepository {
     private final List<ToDoList> lists;
 
-    public MemoryListRepository() {
+    public FakeListRepository() {
         lists = new ArrayList();
     }
 

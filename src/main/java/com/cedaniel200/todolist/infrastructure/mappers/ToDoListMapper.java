@@ -10,7 +10,7 @@ public class ToDoListMapper {
     private ToDoListMapper() {
     }
 
-    public static ToDoList toToDoList(ToDoListInfra toDoListInfra){
+    public static ToDoList toToDoList(ToDoListInfra toDoListInfra) {
         ToDoList toDoList = new ToDoList();
         toDoList.setId(toDoListInfra.getId());
         toDoList.setName(toDoListInfra.getName());
@@ -19,7 +19,7 @@ public class ToDoListMapper {
         return toDoList;
     }
 
-    public static ToDoListInfra toToDoListInfra(ToDoList toDoList){
+    public static ToDoListInfra toToDoListInfra(ToDoList toDoList) {
         return ToDoListInfra.builder()
                 .id(toDoList.getId())
                 .name(toDoList.getName())
