@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ListCollection {
     private final int size;
-    private final List<ToDoListInfra> lists;
+    private final List<ToDoListDTO> lists;
 
-    public ListCollection(List<ToDoListInfra> lists) {
+    public ListCollection(List<ToDoListDTO> lists) {
         this.size = lists.size();
         this.lists = lists;
     }
@@ -15,7 +15,7 @@ public class ListCollection {
         return size;
     }
 
-    public List<ToDoListInfra> getLists() {
+    public List<ToDoListDTO> getLists() {
         return lists;
     }
 }

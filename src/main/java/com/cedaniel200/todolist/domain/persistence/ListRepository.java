@@ -9,5 +9,7 @@ public interface ListRepository {
     ToDoList save(ToDoList toDoList);
     Optional<ToDoList> findById(long listId);
     List<ToDoList> findAll();
-    void delete(ToDoList toDoList);
+    void delete(long listId);
+    void update(ToDoList toDoList);
+    boolean existsById(long listId);
 }

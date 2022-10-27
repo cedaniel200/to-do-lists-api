@@ -9,4 +9,5 @@ public interface ListMediator {
     ToDoList getListById(long listId);
     List<ToDoList> getAllLists();
     void delete(long listId);
+    void update(ToDoList toDoList);
 }

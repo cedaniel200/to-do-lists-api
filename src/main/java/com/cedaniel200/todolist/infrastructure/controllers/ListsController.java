@@ -4,13 +4,12 @@ import com.cedaniel200.todolist.domain.lists.ListMediator;
 import com.cedaniel200.todolist.domain.model.ToDoList;
 import com.cedaniel200.todolist.infrastructure.mappers.ToDoListMapper;
 import com.cedaniel200.todolist.infrastructure.model.ListCollection;
-import com.cedaniel200.todolist.infrastructure.model.ToDoListInfra;
+import com.cedaniel200.todolist.infrastructure.model.ToDoListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -26,32 +25,39 @@ public class ListsController {
     }
 
     @PostMapping(path = "/lists")
-    public ResponseEntity<ToDoListInfra> create(@RequestBody @Valid ToDoListInfra toDoListInfra) {
-        ToDoList toDoListToCreate = ToDoListMapper.toToDoList(toDoListInfra);
+    public ResponseEntity<ToDoListDTO> create(@RequestBody ToDoListDTO toDoListDTO) {
+        ToDoList toDoListToCreate = ToDoListMapper.toToDoList(toDoListDTO);
         ToDoList toDoListCreated = listMediator.create(toDoListToCreate);
-        ToDoListInfra toDoListInfraCreated = ToDoListMapper.toToDoListInfra(toDoListCreated);
-        return new ResponseEntity<>(toDoListInfraCreated, HttpStatus.CREATED);
+        ToDoListDTO toDoListDTOCreated = ToDoListMapper.toToDoListDTO(toDoListCreated);
+        return new ResponseEntity<>(toDoListDTOCreated, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/lists/{listId}")
-    public ResponseEntity<ToDoListInfra> getById(@PathVariable("listId") long listId) {
+    public ResponseEntity<ToDoListDTO> getById(@PathVariable("listId") long listId) {
         ToDoList toDoListFinded = listMediator.getListById(listId);
-        ToDoListInfra toDoListInfraFinded = ToDoListMapper.toToDoListInfra(toDoListFinded);
-        return new ResponseEntity<>(toDoListInfraFinded, HttpStatus.OK);
+        ToDoListDTO toDoListDTOFinded = ToDoListMapper.toToDoListDTO(toDoListFinded);
+        return new ResponseEntity<>(toDoListDTOFinded, HttpStatus.OK);
     }
 
     @GetMapping(path = "/lists")
     public ResponseEntity<ListCollection> getById() {
         List<ToDoList> toDoListsFinded = listMediator.getAllLists();
-        List<ToDoListInfra> toDoListsInfraFinded = toDoListsFinded.stream()
-                .map(ToDoListMapper::toToDoListInfra)
+        List<ToDoListDTO> toDoListsInfraFinded = toDoListsFinded.stream()
+                .map(ToDoListMapper::toToDoListDTO)
                 .collect(toList());
         return new ResponseEntity<>(new ListCollection(toDoListsInfraFinded), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/lists/{listId}")
-    public ResponseEntity delete(@PathVariable("listId") long listId) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("listId") long listId) {
         listMediator.delete(listId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/lists")
+    public ResponseEntity<HttpStatus> update(@RequestBody ToDoListDTO toDoListDTO) {
+        ToDoList toDoListToUpdate = ToDoListMapper.toToDoList(toDoListDTO);
+        listMediator.update(toDoListToUpdate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
