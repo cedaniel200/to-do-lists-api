@@ -10,14 +10,21 @@ API que expone los siguientes servicios, que permiten crear y administrar listas
   * [GET]  /lists/{id}
     * 200 - OK
     * 400 - Solicitud incorrecta (Bad Request)
+    * 404 - No se encuentra la lista (Not Found)
+    * 500 - Error interno del Servidor
+  * [GET]  /lists
+    * 200 - OK
+    * 400 - Solicitud incorrecta (Bad Request)
     * 500 - Error interno del Servidor
   * [PATCH]  /lists/{id}
-      * 200 - OK
-      * 400 - Solicitud incorrecta (Bad Request)
-      * 500 - Error interno del Servidor
+    * 200 - OK
+    * 400 - Solicitud incorrecta (Bad Request)
+    * 404 - No se encuentra la lista (Not Found)
+    * 500 - Error interno del Servidor
   * [DELETE] /lists/{id}
     * 200 - OK
     * 400 - Solicitud incorrecta (Bad Request)
+    * 404 - No se encuentra la lista (Not Found)
     * 500 - Error interno del Servidor
 * ## Items
   * [POST] /lists/{id}/items
