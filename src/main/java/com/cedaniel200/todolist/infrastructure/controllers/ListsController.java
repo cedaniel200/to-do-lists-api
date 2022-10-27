@@ -49,4 +49,9 @@ public class ListsController {
         return new ResponseEntity<>(new ListCollection(toDoListsInfraFinded), HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/lists/{listId}")
+    public ResponseEntity delete(@PathVariable("listId") long listId) {
+        listMediator.delete(listId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

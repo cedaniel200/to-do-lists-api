@@ -25,7 +25,7 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @DisplayName("Acceptance Test of List - API")
@@ -65,6 +65,7 @@ class ListAcceptanceTest {
         openMocks(this);
         when(repository.save(any(ToDoList.class))).thenReturn(toDoListOut);
         when(repository.findById(any(Long.class))).thenReturn(Optional.of(toDoListOut));
+        doNothing().when(repository).delete(any(ToDoList.class));
         when(repository.findAll()).thenReturn(lists);
         standaloneSetup(restExceptionHandler, new ListsController(new ListMediatorDefault(new ListValidator(), repository)));
     }
@@ -110,7 +111,6 @@ class ListAcceptanceTest {
         void shouldGetAListAndReturnStatusCode200() {
             given()
                     .contentType(ContentType.JSON)
-                    .body(toDoListInfra)
                     .when()
                     .get(String.format("http://localhost:%s/lists/1", port))
                     .then()
@@ -125,7 +125,6 @@ class ListAcceptanceTest {
 
             given()
                     .contentType(ContentType.JSON)
-                    .body(toDoListInfra)
                     .when()
                     .get(String.format("http://localhost:%s/lists/0", port))
                     .then()
@@ -142,7 +141,6 @@ class ListAcceptanceTest {
         void shouldGetAListCollectionAndReturnStatusCode200() {
             given()
                     .contentType(ContentType.JSON)
-                    .body(toDoListInfra)
                     .when()
                     .get(String.format("http://localhost:%s/lists", port))
                     .then()
@@ -152,5 +150,34 @@ class ListAcceptanceTest {
 
     }
 
+    @Nested
+    @DisplayName("DELETE - /lists/{listId}")
+    class WhenDeleteAList {
+        @Test
+        void shouldDeleteAListAndReturnStatusCode200() {
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .delete(String.format("http://localhost:%s/lists/1", port))
+                    .then()
+                    .statusCode(is(200));
+            verify(repository).delete(any(ToDoList.class));
+        }
+
+        @Test
+        void shouldNotDeleteAListAndReturnStatusCode404() {
+            when(repository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .delete(String.format("http://localhost:%s/lists/0", port))
+                    .then()
+                    .log().ifValidationFails()
+                    .statusCode(is(404))
+                    .body(containsString("NOT_FOUND"));
+            verify(repository, times(0)).delete(any(ToDoList.class));
+        }
+    }
 
 }

@@ -36,6 +36,12 @@ public class ListMediatorDefault implements ListMediator {
         return this.listRepository.findAll();
     }
 
+    @Override
+    public void delete(long listId) {
+        ToDoList toDoListToDelete = getListById(listId);
+        this.listRepository.delete(toDoListToDelete);
+    }
+
     private void validate(ToDoList toDoList) {
         Optional<List<Error>> errors = validator.validate(toDoList);
         if(errors.isPresent())

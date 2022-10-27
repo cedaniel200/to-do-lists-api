@@ -33,4 +33,9 @@ public class MongoDBListRepository implements ListRepository {
     public List<ToDoList> findAll() {
         return mongoListRepository.findAll();
     }
+
+    @Override
+    public void delete(ToDoList toDoList) {
+        mongoListRepository.delete(toDoList);
+    }
 }

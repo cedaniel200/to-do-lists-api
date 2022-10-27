@@ -35,4 +35,9 @@ public class FakeListRepository implements ListRepository {
     public List<ToDoList> findAll() {
         return lists;
     }
+
+    @Override
+    public void delete(ToDoList toDoList) {
+        lists.remove(toDoList);
+    }
 }
