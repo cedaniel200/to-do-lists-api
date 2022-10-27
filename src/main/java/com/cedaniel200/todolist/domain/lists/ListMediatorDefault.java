@@ -9,17 +9,20 @@ import com.cedaniel200.todolist.domain.util.Validator;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
-import static com.cedaniel200.todolist.domain.util.StringUtils.isNullOrBlank;
+import static java.lang.String.format;
 
 public class ListMediatorDefault implements ListMediator {
 
     private final Validator<ToDoList> validator;
     private final ListRepository listRepository;
+    private final Function<Long, NotFoundException> throwNotFountExceptionFunction;
 
     public ListMediatorDefault(Validator<ToDoList> validator, ListRepository listRepository) {
         this.validator = validator;
         this.listRepository = listRepository;
+        throwNotFountExceptionFunction = (listId) -> new NotFoundException(format("list with id %s not found", listId));
     }
 
     public ToDoList create(ToDoList toDoList) {
@@ -31,7 +34,7 @@ public class ListMediatorDefault implements ListMediator {
     @Override
     public ToDoList getListById(long listId) {
         Optional<ToDoList> toDoList = this.listRepository.findById(listId);
-        return toDoList.orElseThrow(() -> new NotFoundException(String.format("list with id %s not found", listId)));
+        return toDoList.orElseThrow(() -> throwNotFountExceptionFunction.apply(listId));
     }
 
     @Override
@@ -41,31 +44,18 @@ public class ListMediatorDefault implements ListMediator {
 
     @Override
     public void delete(long listId) {
-        ToDoList toDoListToDelete = getListById(listId);
-        this.listRepository.delete(toDoListToDelete);
+        validateIfExists(listId);
+        this.listRepository.delete(listId);
     }
 
     @Override
     public void update(ToDoList toDoList) {
-        ToDoList toDoListToSaved = getListById(toDoList.getId());
-        String name = isNullOrBlank(toDoList.getName()) ?
-                toDoListToSaved.getName() :
-                toDoList.getName();
-        String description = prepareDescriptionToUpdate(toDoListToSaved.getDescription(), toDoList.getDescription());
-
-        ToDoList toDoListToUpdate = ToDoList.builder()
-                .id(toDoListToSaved.getId())
-                .items(toDoListToSaved.getItems())
-                .user(toDoListToSaved.getUser())
-                .description(description)
-                .name(name)
-                .build();
-        this.listRepository.update(toDoListToUpdate);
+        validateIfExists(toDoList.getId());
+        this.listRepository.update(toDoList);
     }
 
-    private String prepareDescriptionToUpdate(String descriptionSaved, String descriptionToUpdate) {
-        if(descriptionToUpdate != null && descriptionToUpdate.isBlank()) return null;
-        return descriptionToUpdate == null ? descriptionSaved : descriptionToUpdate;
+    private void validateIfExists(long listId) {
+        if(!this.listRepository.existsById(listId)) throw throwNotFountExceptionFunction.apply(listId);
     }
 
     private void validate(ToDoList toDoList) {

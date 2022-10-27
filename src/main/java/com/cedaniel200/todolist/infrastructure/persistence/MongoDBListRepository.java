@@ -6,6 +6,7 @@ import com.cedaniel200.todolist.domain.persistence.ListRepository;
 import java.util.List;
 import java.util.Optional;
 
+import static com.cedaniel200.todolist.domain.util.StringUtils.isNullOrBlank;
 import static com.cedaniel200.todolist.infrastructure.model.ToDoListDTO.SEQUENCE_NAME;
 
 public class MongoDBListRepository implements ListRepository {
@@ -35,12 +36,35 @@ public class MongoDBListRepository implements ListRepository {
     }
 
     @Override
-    public void delete(ToDoList toDoList) {
-        mongoListRepository.delete(toDoList);
+    public void delete(long listId) {
+        mongoListRepository.deleteById(listId);
     }
 
     @Override
     public void update(ToDoList toDoList) {
-        mongoListRepository.save(toDoList);
+        ToDoList toDoListToSaved = findById(toDoList.getId()).get();
+        String name = isNullOrBlank(toDoList.getName()) ?
+                toDoListToSaved.getName() :
+                toDoList.getName();
+        String description = prepareDescriptionToUpdate(toDoListToSaved.getDescription(), toDoList.getDescription());
+
+        ToDoList toDoListToUpdate = ToDoList.builder()
+                .id(toDoListToSaved.getId())
+                .items(toDoListToSaved.getItems())
+                .user(toDoListToSaved.getUser())
+                .description(description)
+                .name(name)
+                .build();
+        mongoListRepository.save(toDoListToUpdate);
+    }
+
+    private String prepareDescriptionToUpdate(String descriptionSaved, String descriptionToUpdate) {
+        if(descriptionToUpdate != null && descriptionToUpdate.isBlank()) return null;
+        return descriptionToUpdate == null ? descriptionSaved : descriptionToUpdate;
+    }
+
+    @Override
+    public boolean existsById(long listId) {
+        return mongoListRepository.existsById(listId);
     }
 }
