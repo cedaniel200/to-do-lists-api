@@ -26,7 +26,7 @@ public class ListMediatorDefault implements ListMediator {
     }
 
     @Override
-    public ToDoList getListById(Long listId) {
+    public ToDoList getListById(long listId) {
         Optional<ToDoList> toDoList = this.listRepository.findById(listId);
         return toDoList.orElseThrow(() -> new NotFoundException(String.format("list with id %s not found", listId)));
     }

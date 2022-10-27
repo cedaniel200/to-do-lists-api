@@ -34,7 +34,7 @@ public class ListsController {
     }
 
     @GetMapping(path = "/lists/{listId}")
-    public ResponseEntity<ToDoListInfra> getById(@PathVariable("listId") Long listId) {
+    public ResponseEntity<ToDoListInfra> getById(@PathVariable("listId") long listId) {
         ToDoList toDoListFinded = listMediator.getListById(listId);
         ToDoListInfra toDoListInfraFinded = ToDoListMapper.toToDoListInfra(toDoListFinded);
         return new ResponseEntity<>(toDoListInfraFinded, HttpStatus.OK);

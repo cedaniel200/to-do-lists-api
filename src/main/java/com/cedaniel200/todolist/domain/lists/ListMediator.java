@@ -7,7 +7,7 @@ import java.util.List;
 public interface ListMediator {
     ToDoList create(ToDoList toDoList);
 
-    ToDoList getListById(Long listId);
+    ToDoList getListById(long listId);
 
     List<ToDoList> getAllLists();
 }
