@@ -10,4 +10,5 @@ public interface ListRepository {
     Optional<ToDoList> findById(long listId);
     List<ToDoList> findAll();
     void delete(ToDoList toDoList);
+    void update(ToDoList toDoList);
 }

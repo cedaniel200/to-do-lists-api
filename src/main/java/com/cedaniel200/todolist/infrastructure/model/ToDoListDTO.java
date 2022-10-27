@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document("lists")
-public class ToDoListInfra {
+public class ToDoListDTO {
 
     @Transient
     public static final String SEQUENCE_NAME = "lists_sequence";

@@ -6,7 +6,7 @@ import com.cedaniel200.todolist.domain.model.ToDoList;
 import com.cedaniel200.todolist.domain.persistence.ListRepository;
 import com.cedaniel200.todolist.infrastructure.controllers.ListsController;
 import com.cedaniel200.todolist.infrastructure.exception.RestExceptionHandler;
-import com.cedaniel200.todolist.infrastructure.model.ToDoListInfra;
+import com.cedaniel200.todolist.infrastructure.model.ToDoListDTO;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,11 +42,11 @@ class ListAcceptanceTest {
     private RestExceptionHandler restExceptionHandler;
     @Mock
     private ListRepository repository;
-    private ToDoListInfra toDoListInfra;
+    private ToDoListDTO toDoListDTO;
 
     @BeforeEach
     public void setup() {
-        toDoListInfra = ToDoListInfra.builder()
+        toDoListDTO = ToDoListDTO.builder()
                 .name("Cosas por hacer")
                 .description("Mis cosas por hacer esta semana")
                 .user("cdanielmg200@gmail.com")
@@ -77,7 +77,7 @@ class ListAcceptanceTest {
         void shouldCreateAListAndReturnStatusCode201() {
             given()
                     .contentType(ContentType.JSON)
-                    .body(toDoListInfra)
+                    .body(toDoListDTO)
                     .when()
                     .post(String.format("http://localhost:%s/lists", port))
                     .then()
@@ -88,12 +88,12 @@ class ListAcceptanceTest {
 
         @Test
         void shouldNotCreateAListAndReturnStatusCode400() {
-            toDoListInfra.setName(null);
-            toDoListInfra.setUser(null);
+            toDoListDTO.setName(null);
+            toDoListDTO.setUser(null);
 
             given()
                     .contentType(ContentType.JSON)
-                    .body(toDoListInfra)
+                    .body(toDoListDTO)
                     .when()
                     .post(String.format("http://localhost:%s/lists", port))
                     .then()

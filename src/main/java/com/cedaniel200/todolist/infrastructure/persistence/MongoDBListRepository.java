@@ -6,7 +6,7 @@ import com.cedaniel200.todolist.domain.persistence.ListRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.cedaniel200.todolist.infrastructure.model.ToDoListInfra.SEQUENCE_NAME;
+import static com.cedaniel200.todolist.infrastructure.model.ToDoListDTO.SEQUENCE_NAME;
 
 public class MongoDBListRepository implements ListRepository {
 
@@ -37,5 +37,10 @@ public class MongoDBListRepository implements ListRepository {
     @Override
     public void delete(ToDoList toDoList) {
         mongoListRepository.delete(toDoList);
+    }
+
+    @Override
+    public void update(ToDoList toDoList) {
+        mongoListRepository.save(toDoList);
     }
 }
