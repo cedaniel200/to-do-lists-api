@@ -37,13 +37,18 @@ public class FakeListRepository implements ListRepository {
     }
 
     @Override
-    public void delete(ToDoList toDoList) {
-        lists.remove(toDoList);
+    public void delete(long listId) {
+        lists.remove(listId);
     }
 
     @Override
     public void update(ToDoList toDoList) {
         lists.removeIf(list -> list.getId() == toDoList.getId());
         lists.add(toDoList);
+    }
+
+    @Override
+    public boolean existsById(long listId) {
+        return lists.get((int)listId) != null;
     }
 }

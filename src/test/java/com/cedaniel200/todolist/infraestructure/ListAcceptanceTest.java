@@ -65,7 +65,8 @@ class ListAcceptanceTest {
         openMocks(this);
         when(repository.save(any(ToDoList.class))).thenReturn(toDoListOut);
         when(repository.findById(any(Long.class))).thenReturn(Optional.of(toDoListOut));
-        doNothing().when(repository).delete(any(ToDoList.class));
+        when(repository.existsById(any(Long.class))).thenReturn(true);
+        doNothing().when(repository).delete(any(Long.class));
         when(repository.findAll()).thenReturn(lists);
         standaloneSetup(restExceptionHandler, new ListsController(new ListMediatorDefault(new ListValidator(), repository)));
     }
@@ -161,12 +162,12 @@ class ListAcceptanceTest {
                     .delete(String.format("http://localhost:%s/lists/1", port))
                     .then()
                     .statusCode(is(200));
-            verify(repository).delete(any(ToDoList.class));
+            verify(repository).delete(any(Long.class));
         }
 
         @Test
         void shouldNotDeleteAListAndReturnStatusCode404() {
-            when(repository.findById(any(Long.class))).thenReturn(Optional.empty());
+            when(repository.existsById(any(Long.class))).thenReturn(false);
 
             given()
                     .contentType(ContentType.JSON)
@@ -176,7 +177,42 @@ class ListAcceptanceTest {
                     .log().ifValidationFails()
                     .statusCode(is(404))
                     .body(containsString("NOT_FOUND"));
-            verify(repository, times(0)).delete(any(ToDoList.class));
+            verify(repository, times(0)).delete(any(Long.class));
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH - /lists")
+    class WhenUpdateAList {
+        @Test
+        void shouldDeleteAListAndReturnStatusCode200() {
+            toDoListDTO.setId(1);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body(toDoListDTO)
+                    .when()
+                    .patch(String.format("http://localhost:%s/lists", port))
+                    .then()
+                    .statusCode(is(200));
+            verify(repository).update(any(ToDoList.class));
+        }
+
+        @Test
+        void shouldNotDeleteAListAndReturnStatusCode404() {
+            toDoListDTO.setId(1);
+            when(repository.existsById(any(Long.class))).thenReturn(false);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body(toDoListDTO)
+                    .when()
+                    .patch(String.format("http://localhost:%s/lists", port))
+                    .then()
+                    .log().ifValidationFails()
+                    .statusCode(is(404))
+                    .body(containsString("NOT_FOUND"));
+            verify(repository, times(0)).update(any(ToDoList.class));
         }
     }
 
