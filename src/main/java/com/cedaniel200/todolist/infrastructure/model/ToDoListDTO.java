@@ -26,7 +26,7 @@ public class ToDoListDTO {
     private String name;
     private String description;
     private String user;
-    private List<Item> items;
+    private List<ItemDTO> items;
     private Date date;
 
 }
