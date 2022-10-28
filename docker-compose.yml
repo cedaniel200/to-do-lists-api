@@ -6,7 +6,7 @@ services:
       context: .
     restart: always
     ports:
-      - "9000:9000"
+      - "8400:8400"
     depends_on:
       - mongo-db
 

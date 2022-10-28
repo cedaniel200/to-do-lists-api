@@ -6,6 +6,6 @@ COPY . /home/ToDoListService
 
 WORKDIR /home/ToDoListService
 
-EXPOSE 9000
+EXPOSE 8400
 
 CMD ["./gradlew", "clean", "bootRun"]

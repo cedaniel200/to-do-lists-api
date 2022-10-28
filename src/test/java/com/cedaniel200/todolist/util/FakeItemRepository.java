@@ -1,4 +1,4 @@
-package com.cedaniel200.todolist.infrastructure.persistence;
+package com.cedaniel200.todolist.util;
 
 import com.cedaniel200.todolist.domain.model.Item;
 import com.cedaniel200.todolist.domain.persistence.ItemRepository;

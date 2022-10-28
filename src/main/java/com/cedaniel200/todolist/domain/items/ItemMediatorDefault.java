@@ -5,6 +5,7 @@ import com.cedaniel200.todolist.domain.model.Item;
 import com.cedaniel200.todolist.domain.persistence.ItemRepository;
 import com.cedaniel200.todolist.domain.persistence.ListRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ItemMediatorDefault implements ItemMediator {
@@ -18,19 +19,25 @@ public class ItemMediatorDefault implements ItemMediator {
 
     @Override
     public Item create(long listId, Item item) {
-        if(!this.listRepository.existsById(listId))
-            throw new NotFoundException(String.format("list with id %s not found", listId));
+        validateIfListExists(listId);
         return itemRepository.create(listId, item);
     }
 
     @Override
     public Item getById(long listId, long itemId) {
+        validateIfListExists(listId);
         Optional<Item> item = itemRepository.getById(listId, itemId);
         return item.orElseThrow(() -> new NotFoundException(String.format("item with id %s not found", itemId)));
     }
 
-    private void validateIfExists(long listId, long itemId) {
-        if(!this.itemRepository.existsById(listId, itemId))
-            throw new NotFoundException(String.format("item with id %s not found", itemId));
+    @Override
+    public List<Item> getAll(long listId) {
+        validateIfListExists(listId);
+        return itemRepository.getAll(listId);
+    }
+
+    private void validateIfListExists(long listId) {
+        if(!this.listRepository.existsById(listId))
+            throw new NotFoundException(String.format("list with id %s not found", listId));
     }
 }

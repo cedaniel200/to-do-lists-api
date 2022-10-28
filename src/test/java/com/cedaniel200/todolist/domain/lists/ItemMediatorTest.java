@@ -5,7 +5,7 @@ import com.cedaniel200.todolist.domain.items.ItemMediator;
 import com.cedaniel200.todolist.domain.items.ItemMediatorDefault;
 import com.cedaniel200.todolist.domain.model.Item;
 import com.cedaniel200.todolist.domain.persistence.ListRepository;
-import com.cedaniel200.todolist.infrastructure.persistence.FakeItemRepository;
+import com.cedaniel200.todolist.util.FakeItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
