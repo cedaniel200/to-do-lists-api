@@ -18,8 +18,8 @@ class ItemMediatorTest {
 
     @BeforeEach
     void setupt() {
-        itemRice = Item.builder().id(1).description("Comprar Arroz").done(false).build();
-        itemMilk = Item.builder().id(2).description("Comprar Leche").done(false).build();
+        itemRice = Item.builder().id(0).description("Comprar Arroz").done(false).build();
+        itemMilk = Item.builder().id(1).description("Comprar Leche").done(false).build();
         this.mediator = new ItemMediatorDefault(new FakeItemRepository());
     }
 
@@ -27,17 +27,16 @@ class ItemMediatorTest {
     void shouldCreateAnItem() {
         Item itemSaved = mediator.create(1L, itemRice);
 
-        assertEquals(1, itemSaved.getId());
+        assertEquals(0, itemSaved.getId());
     }
 
     @Test
     void shouldGetAnItemById() {
-        Item item = Item.builder().id(1).description("Comprar Arroz").done(false).build();
-        mediator.create(1L, item);
+        mediator.create(1L, itemRice);
 
-        Item itemSaved = mediator.getById(item.getId());
+        Item itemSaved = mediator.getById(itemRice.getId());
 
-        assertEquals(1, itemSaved.getId());
+        assertEquals(0, itemSaved.getId());
     }
 
     @Test
@@ -48,8 +47,8 @@ class ItemMediatorTest {
         Item itemXSaved = mediator.getById(itemRice.getId());
         Item itemYSaved = mediator.getById(itemMilk.getId());
 
-        assertEquals(1, itemXSaved.getId());
-        assertEquals(2, itemYSaved.getId());
+        assertEquals(0, itemXSaved.getId());
+        assertEquals(1, itemYSaved.getId());
     }
 
     @Test

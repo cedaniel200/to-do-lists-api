@@ -22,13 +22,11 @@ public class FakeItemRepository implements ItemRepository {
 
     @Override
     public Item getById(long itemId) {
-        --itemId;
         return items.get((int) itemId);
     }
 
     @Override
     public boolean existsById(long itemId) {
-        --itemId;
         if(items.isEmpty() || items.size() <  itemId) return false;
         return items.get((int)itemId) != null;
     }
