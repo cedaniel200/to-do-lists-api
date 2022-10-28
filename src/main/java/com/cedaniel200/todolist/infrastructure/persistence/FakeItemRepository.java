@@ -16,7 +16,7 @@ public class FakeItemRepository implements ItemRepository {
     @Override
     public Item create(long listId, Item item) {
         items.add(item);
-        item.setId(items.size() - 1);
+        item.setId((long)items.size() - 1);
         return item;
     }
 
