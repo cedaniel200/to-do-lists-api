@@ -3,6 +3,7 @@ package com.cedaniel200.todolist.infrastructure.config;
 import com.cedaniel200.todolist.domain.items.ItemMediator;
 import com.cedaniel200.todolist.domain.items.ItemMediatorDefault;
 import com.cedaniel200.todolist.domain.persistence.ItemRepository;
+import com.cedaniel200.todolist.domain.persistence.ListRepository;
 import com.cedaniel200.todolist.infrastructure.persistence.FakeItemRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,7 @@ public class ItemsConfiguration {
     }
 
     @Bean
-    public ItemMediator providesItemMediatorInstance(ItemRepository repository) {
-        return new ItemMediatorDefault(repository);
+    public ItemMediator providesItemMediatorInstance(ListRepository listRepository, ItemRepository repository) {
+        return new ItemMediatorDefault(listRepository, repository);
     }
 }

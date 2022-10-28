@@ -4,7 +4,7 @@ spring:
   data:
     mongodb:
       database: to-do-lists
-      uri: mongodb://localhost:27017/to-do-lists
+      uri: mongodb://root:123456789@mongo-db:27017/to-do-lists?authSource=admin
 springdoc:
   api-docs:
     path: /todo-list/docs

@@ -5,5 +5,5 @@ import com.cedaniel200.todolist.domain.model.Item;
 public interface ItemMediator {
     Item create(long listId, Item item);
 
-    Item getById(long itemId);
+    Item getById(long listId, long itemId);
 }

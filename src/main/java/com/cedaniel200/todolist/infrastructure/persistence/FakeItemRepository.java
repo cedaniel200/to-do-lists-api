@@ -5,6 +5,7 @@ import com.cedaniel200.todolist.domain.persistence.ItemRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FakeItemRepository implements ItemRepository {
     public final List<Item> items;
@@ -21,12 +22,18 @@ public class FakeItemRepository implements ItemRepository {
     }
 
     @Override
-    public Item getById(long itemId) {
-        return items.get((int) itemId);
+    public Optional<Item> getById(long listId, long itemId) {
+        if(items.isEmpty() || items.size() <  itemId) return Optional.empty();
+        return Optional.of(items.get((int) itemId));
     }
 
     @Override
-    public boolean existsById(long itemId) {
+    public List<Item> getAll(long listId) {
+        return items;
+    }
+
+    @Override
+    public boolean existsById(long listId, long itemId) {
         if(items.isEmpty() || items.size() <  itemId) return false;
         return items.get((int)itemId) != null;
     }
