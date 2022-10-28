@@ -11,7 +11,7 @@ public class FakeListRepository implements ListRepository {
     private final List<ToDoList> lists;
 
     public FakeListRepository() {
-        lists = new ArrayList();
+        lists = new ArrayList<>();
     }
 
     @Override
@@ -27,6 +27,7 @@ public class FakeListRepository implements ListRepository {
 
     @Override
     public Optional<ToDoList> findById(long listId) {
+        --listId;
         if(lists.isEmpty() || lists.size() <  listId) return Optional.empty();
         return Optional.ofNullable(lists.get((int) listId));
     }
@@ -38,7 +39,8 @@ public class FakeListRepository implements ListRepository {
 
     @Override
     public void delete(long listId) {
-        lists.remove(listId);
+        --listId;
+        lists.remove((int)listId);
     }
 
     @Override
@@ -49,6 +51,8 @@ public class FakeListRepository implements ListRepository {
 
     @Override
     public boolean existsById(long listId) {
+        --listId;
+        if(lists.isEmpty() || lists.size() <  listId) return false;
         return lists.get((int)listId) != null;
     }
 }
